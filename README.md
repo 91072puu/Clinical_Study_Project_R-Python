@@ -1,1 +1,1 @@
-# SAS_to_R
+# This repository is for exploring the idea how to transform SAS code into R/Python 
