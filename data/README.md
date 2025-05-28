@@ -7,7 +7,7 @@ This repository contains exploratory analysis using sample clinical trial data b
 
 ## 📊 Dataset Source
 
-- **Source**: [CDISC Pilot Project](https://www.cdisc.org)
+- **Source**: [CDISC Pilot Project](https://github.com/cdisc-org/sdtm-adam-pilot-project/)
 - **Direct dataset access**:
 - SDTM: [SDTM datasets](https://github.com/cdisc-org/sdtm-adam-pilot-project/tree/master/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/tabulations/sdtm)
 - ADaM: [ADaM datasets](https://github.com/cdisc-org/sdtm-adam-pilot-project/tree/master/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/analysis/adam/datasets)
