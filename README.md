@@ -9,12 +9,12 @@ This repository contains exploratory analysis using sample clinical trial data b
 
 - **Source**: [CDISC Pilot Project](https://www.cdisc.org)
 - **Direct dataset access**:
-- SDTM: https://github.com/cdisc-org/sdtm-adam-pilot-project/tree/master/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/tabulations/sdtm
-- ADAM: https://github.com/cdisc-org/sdtm-adam-pilot-project/tree/master/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/analysis/adam/datasets
+- SDTM: [SDTM] (https://github.com/cdisc-org/sdtm-adam-pilot-project/tree/master/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/tabulations/sdtm)
+- ADaM: [ADaM] (https://github.com/cdisc-org/sdtm-adam-pilot-project/tree/master/updated-pilot-submission-package/900172/m5/datasets/cdiscpilot01/analysis/adam/datasets)
 - **Data format**: SDTM/ADaM (.xpt format)
 - **Purpose**: Educational / non-commercial / personal learning
 
-These data are provided for informational and educational purposes only and are subject to [CDISC's Terms of Use](https://www.cdisc.org/terms-of-use).
+These data are provided for informational and educational purposes only and are subject to https://www.cdisc.org/terms-and-conditions.
 
 > ⚠️ This project is not affiliated with or endorsed by CDISC.  
 > Redistribution or commercial use of the data is not allowed.  
