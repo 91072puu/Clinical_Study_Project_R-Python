@@ -7,7 +7,7 @@ This project is a practice repository for clinical trial data analysis using Pyt
 - Python & Google Colab based workflow
 
 ## Data
-Data used in this project comes from [CDISC Pilot Project](https://www.cdisc.org)
+Data used in this project comes from [CDISC Pilot Project](https://github.com/cdisc-org/sdtm-adam-pilot-project/
 
 ## How to Use
 Open notebooks from the `notebooks/` folder on Google Colab
