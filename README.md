@@ -1,5 +1,5 @@
 # Clinical Study Sample Project
-This project is a practice repository for clinical trial data analysis using Python and CDISC SDTM/ADaM sample data.
+This project is a practice repository for clinical trial data analysis using Python/R and CDISC SDTM/ADaM sample data.
 
 ## Contents
 - Exploratory analysis using Python and R
