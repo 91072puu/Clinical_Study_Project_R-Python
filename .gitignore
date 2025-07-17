@@ -1,2 +1,14 @@
-data/*
-!data/README.md
+# ignore Python cache
+__pycache__/
+*.pyc
+
+# ignore Jupyter checkpoints
+.ipynb_checkpoints/
+
+# ignore local settings
+.vscode/
+*.log
+
+# ignore data
+data/
+*.xpt
