@@ -12,3 +12,6 @@ __pycache__/
 # ignore data
 data/
 *.xpt
+
+#ignore ds_store
+.DS_Store
