@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 
 # ignore Jupyter checkpoints
-.ipynb_checkpoints/
+**/.ipynb_checkpoints/
 
 # ignore local settings
 .vscode/
