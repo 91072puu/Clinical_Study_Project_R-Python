@@ -15,12 +15,14 @@ The scripts follow CDISC standards and replicate typical tasks such as ADSL crea
 ## Data
 Data used in this project comes from [CDISC Pilot Project](https://github.com/cdisc-org/sdtm-adam-pilot-project/)
 
+## AI Assistance Disclosure
+Some of the code in this repository was generated or assisted by OpenAI's ChatGPT.  
+The code has been reviewed and modified as needed for this clinical programming context.
+
 ## License
 
 This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).
-
 You are free to use, modify, and share this project for non-commercial purposes, **as long as proper credit is given**.
-
 Author: 91072puu 
 Original Repository: [Clinical_Study_Project_R-Python](https://github.com/91072puu/Clinical_Study_Project_R-Python)
 
