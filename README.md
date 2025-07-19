@@ -1,5 +1,11 @@
-# Clinical Study Sample Project
-This project is a practice repository for clinical trial data analysis using Python/R and CDISC SDTM/ADaM sample data.
+## Clinical Study Project in R & Python
+
+This project explores idea how to reproduce standard clinical trial data processing tasks (e.g., SDTM, ADaM generation) using R and Python. It is aimed at:
+
+- Statistical programmers familiar with SAS
+- Clinical trial professionals interested in open-source tools
+
+The scripts follow CDISC standards and replicate typical tasks such as ADSL creation and SUPPxx handling etc.
 
 ## Contents
 - Exploratory analysis using Python and R
