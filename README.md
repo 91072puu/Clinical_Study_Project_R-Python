@@ -12,6 +12,10 @@ The scripts follow CDISC standards and replicate typical tasks such as ADSL crea
 - Basic pandas operations
 - Python & Google Colab based workflow
 
+## Note for Readers
+I am a beginner in Python and R, so any comments, suggestions, or improvements are very welcome!  
+Feel free to point out anything that can be made better or clearer.
+
 ## Data
 Data used in this project comes from [CDISC Pilot Project](https://github.com/cdisc-org/sdtm-adam-pilot-project/)
 
