@@ -15,9 +15,6 @@ The scripts follow CDISC standards and replicate typical tasks such as ADSL crea
 ## Data
 Data used in this project comes from [CDISC Pilot Project](https://github.com/cdisc-org/sdtm-adam-pilot-project/)
 
-## How to Use
-Open notebooks from the `notebooks/` folder on Google Colab
-
 ## License
 
 This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).
