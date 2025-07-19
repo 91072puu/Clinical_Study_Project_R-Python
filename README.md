@@ -1,6 +1,6 @@
 ## Clinical Study Project in R & Python
 
-This project explores idea how to reproduce standard clinical trial data processing tasks (e.g., SDTM, ADaM generation) using R and Python. It is aimed at:
+This project aims to explore idea how to reproduce standard clinical trial data processing tasks (e.g., SDTM, ADaM generation) using R and Python. It is aimed at:
 
 - Statistical programmers familiar with SAS
 - Clinical trial professionals interested in open-source tools
