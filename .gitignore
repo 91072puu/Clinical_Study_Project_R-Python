@@ -1,13 +1,19 @@
-# ignore Python cache
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.env
+.venv
 
-# ignore Jupyter checkpoints
-**/.ipynb_checkpoints/
+# R
+.Rhistory
+.RData
+.Rproj.user
 
-# ignore local settings
+# VSCode or IDE
 .vscode/
-*.log
+.idea/
 
 # ignore data
 data/
