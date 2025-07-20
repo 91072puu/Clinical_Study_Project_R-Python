@@ -18,8 +18,7 @@ from helpers.read_and_merge import read_and_merge
 # ---------------------------------------------------
 
 # Read data
-domains = ["dm", "ex", "ds"]
-merged_data = read_and_merge(domains)
+merged_data = read_and_merge(["dm", "ex", "ds"])
 
 dm = merged_data["dm"]
 ex = merged_data["ex"]
@@ -99,4 +98,11 @@ plt.xlabel('Age')
 plt.ylabel('Count')
 plt.title('Age Distribution')
 plt.show()
+
+# ---------------------------------------------------
+# 4. Save as CSV
+# ---------------------------------------------------
+script_dir = os.path.dirname(__file__)
+ADSL.to_csv(os.path.join(script_dir, "adsl.csv"), index=False)
+
 

@@ -1,3 +1,17 @@
+"""
+Module: read_and_merge
+
+Functions:
+1. read_xpt() - Read .xpt files from ../data/
+2. decode_byte_columns() - Decode byte columns to UTF-8 strings
+3. merge_supp() - Merge SUPP-- domains to main SDTM domains
+4. read_and_merge(domains) - Apply #1 to #3 and return merged DataFrames
+
+Usage Notes:
+- Place all .xpt files in ../data relative to this script
+- Save read_and_merge script in ../scripts/helpers
+- Call `read_and_merge(["DM", "AE", ...])` from your main script
+"""
 
 # Import libraries
 import pandas as pd
