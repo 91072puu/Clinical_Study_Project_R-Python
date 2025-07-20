@@ -22,11 +22,10 @@ data/
 data/
 *.csv
 
-scripts/
 *.xpt
 
 #ignore ds_store
-**/..DS_Store/
+**/.DS_Store
 
 # ignore checkpoints
 .ipynb_checkpoints/
