@@ -12,8 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-script_dir = os.path.dirname(__file__)
-data_dir = os.path.join(script_dir, "../data")  
+script_dir = os.path.dirname(__file__)  # Get the directory path where this script is located
+data_dir = os.path.join(script_dir, "../data")  # Set path to 'data' folder located one level above the script directory
 
 # Read XPT file
 def read_xpt(filename):
