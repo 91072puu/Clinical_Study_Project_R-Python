@@ -35,26 +35,26 @@ trt_dates = ex.groupby('USUBJID').agg(
 ).reset_index()
 
 # Merge to DM
-adsl_temp = pd.merge(dm, trt_dates, on="USUBJID", how="left")
+adsl_full = pd.merge(dm, trt_dates, on="USUBJID", how="left")
 
 # Rename
-adsl_temp = adsl_temp.rename(columns={'ARM': 'TRT01P', 'ACTARM': 'TRT01A'})
+adsl_full = adsl_full.rename(columns={'ARM': 'TRT01P', 'ACTARM': 'TRT01A'})
 
 # AGEGRP1
-adsl_temp['AGEGRP1'] = pd.cut(adsl_temp['AGE'],
+adsl_full['AGEGRP1'] = pd.cut(adsl_full['AGE'],
                               bins=[0, 65, 75, np.inf],
                               labels = ['<65', '65-74', '75+'],
                               include_lowest=True) #if there is 0 years old (not for this data...)
 
 # FASFL
-adsl_temp['FASFL'] = np.where(adsl_temp['TRTSDT'].notna(), 'Y', 'N')
+adsl_full['FASFL'] = np.where(adsl_full['TRTSDT'].notna(), 'Y', 'N')
 
 # Final ADSL
 adsl_vars = [
     'STUDYID', 'USUBJID', 'SUBJID', 'AGEU', 'AGE', 'AGEGRP1', 
     'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01A', 'FASFL'
 ]
-ADSL = adsl_temp[adsl_vars].copy()
+ADSL = adsl_full[adsl_vars].copy()
 
 #Duplicate check
 assert ADSL['USUBJID'].is_unique, "There are duplicate USUBJID in ADSL!"
@@ -100,7 +100,7 @@ plt.title('Age Distribution')
 plt.show()
 
 # ---------------------------------------------------
-# 4. Save as CSV
+# 4. Save as CSV 
 # ---------------------------------------------------
 script_dir = os.path.dirname(__file__)
 ADSL.to_csv(os.path.join(script_dir, "adsl.csv"), index=False)
