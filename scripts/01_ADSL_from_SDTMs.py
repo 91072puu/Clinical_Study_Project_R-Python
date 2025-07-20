@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from helpers.read_and_merge import read_and_merge
+from helpers.rename_sdtm_var import rename_sdtm_var
 
 
 # ---------------------------------------------------
@@ -77,11 +78,13 @@ adsl_full['AGEGRP1'] = pd.cut(adsl_full['AGE'],
 # FASFL - as no randomization date 
 adsl_full['FASFL'] = np.where(adsl_full['TRTSDT'].notna(), 'Y', 'N')
 
-# Flags set to SUPPDM values
-adsl_full = adsl_full.rename(columns={'SAFETY': 'SAFFL', 'ITT': 'ITTFL', 'EFFICACY':'EFFFL'})
-adsl_full['SAFFL'] = adsl_full['SAFFL'].fillna('N') #assign N to missing
-adsl_full['ITTFL'] = adsl_full['ITTFL'].fillna('N') #assign N to missing
-adsl_full['EFFFL'] = adsl_full['EFFFL'].fillna('N') #assign N to missing
+# Flags set to SUPPDM values - looks like we can use rename for this study
+
+
+rename_map = {'SAFETY': 'SAFFL', 'ITT': 'ITTFL', 'EFFICACY': 'EFFFL', 
+            'COMPLT8':'COMPFL8','COMPLT16':'COMPFL16','COMPLT24':'COMPFL24'}
+
+adsl_full = rename_sdtm_var(adsl_full, rename_map,fill_value='N')
 
 
 # ---------------------------------------------------
@@ -92,7 +95,7 @@ adsl_full['EFFFL'] = adsl_full['EFFFL'].fillna('N') #assign N to missing
 adsl_vars = [
     'STUDYID', 'USUBJID', 'SUBJID', 'AGE', 'AGEU', 'AGEGRP1', 
     'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01PN', 'TRT01A', 'TRT01AN', 
-    'FASFL', 'SAFFL', 'ITTFL', 'EFFFL'
+    'FASFL', 'SAFFL', 'ITTFL', 'EFFFL', 'COMPFL8', 'COMPFL16','COMPFL24'
 ]
 
 # Create ADSL
