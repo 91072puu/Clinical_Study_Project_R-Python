@@ -90,10 +90,11 @@ def read_and_merge(domains):
     supp_domains = {}
 
     for domain in domains:
-        main_df = decode_byte_columns(read_xpt(os.path.join(data_dir, f"{domain}.xpt")))
+        # ファイル名は小文字と仮定
+        main_df = decode_byte_columns(read_xpt(os.path.join(data_dir, f"{domain.lower()}.xpt"))) #as xpt are lowercase
         dataframes[domain] = main_df
 
-        supp_file = f"SUPP{domain}.xpt"
+        supp_file = f"SUPP{domain.upper()}.xpt"
         try:
             supp_df = decode_byte_columns(read_xpt(os.path.join(data_dir, supp_file)))
             supp_domains[domain] = supp_df

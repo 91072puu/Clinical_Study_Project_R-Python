@@ -18,11 +18,11 @@ from helpers.read_and_merge import read_and_merge
 # ---------------------------------------------------
 
 # Read data
-merged_data = read_and_merge(["dm", "ex", "ds"])
+merged_data = read_and_merge(["DM", "EX", "DS"])
 
-dm = merged_data["dm"]
-ex = merged_data["ex"]
-ds = merged_data["ds"]
+dm = merged_data["DM"]
+ex = merged_data["EX"]
+ds = merged_data["DS"]
 
 
 # TRTSDT / TRTEDT
@@ -37,22 +37,30 @@ trt_dates = ex.groupby('USUBJID').agg(
 # Merge to DM
 adsl_full = pd.merge(dm, trt_dates, on="USUBJID", how="left")
 
-# Rename
+# TRT01P and TRT01A Rename ARM/ACTARM
 adsl_full = adsl_full.rename(columns={'ARM': 'TRT01P', 'ACTARM': 'TRT01A'})
 
 # AGEGRP1
 adsl_full['AGEGRP1'] = pd.cut(adsl_full['AGE'],
                               bins=[0, 65, 75, np.inf],
-                              labels = ['<65', '65-74', '75+'],
+                              labels = ['<65', '65-74', '75+'], 
                               include_lowest=True) #if there is 0 years old (not for this data...)
 
-# FASFL
+print(adsl_full['AGEGRP1'].cat.categories.tolist())
+
+# FASFL - as no randomization date 
 adsl_full['FASFL'] = np.where(adsl_full['TRTSDT'].notna(), 'Y', 'N')
+
+# Flags set to SUPPDM values
+adsl_full = adsl_full.rename(columns={'SAFETY': 'SAFFL', 'ITT': 'ITTFL'})
+adsl_full['SAFFL'] = adsl_full['SAFFL'].fillna('N') #assign N to missing
+adsl_full['ITTFL'] = adsl_full['ITTFL'].fillna('N') #assign N to missing
+
 
 # Final ADSL
 adsl_vars = [
-    'STUDYID', 'USUBJID', 'SUBJID', 'AGEU', 'AGE', 'AGEGRP1', 
-    'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01A', 'FASFL'
+    'STUDYID', 'USUBJID', 'SUBJID', 'AGE', 'AGEU', 'AGEGRP1', 
+    'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01A', 'FASFL', 'SAFFL', 'ITTFL'
 ]
 ADSL = adsl_full[adsl_vars].copy()
 
@@ -66,14 +74,14 @@ assert ADSL['USUBJID'].is_unique, "There are duplicate USUBJID in ADSL!"
 
 # ### Data checks
 #Data checks
-#print(ds.head())
-#print(dm.columns)
+#print(ADSL.head())
+print(ADSL.columns)
 #list(dm.columns)
 
 
 
 # Data types
-print(ADSL.dtypes)
+#print(ADSL.dtypes)
 
 # Check missing values
 #print(adsl.isnull().sum())
@@ -93,11 +101,11 @@ print(ADSL.dtypes)
 
 #histogram
 
-dm['AGE'].hist(bins=20)
-plt.xlabel('Age')
-plt.ylabel('Count')
-plt.title('Age Distribution')
-plt.show()
+#dm['AGE'].hist(bins=20)
+#plt.xlabel('Age')
+#plt.ylabel('Count')
+#plt.title('Age Distribution')
+#plt.show()
 
 # ---------------------------------------------------
 # 4. Save as CSV 
