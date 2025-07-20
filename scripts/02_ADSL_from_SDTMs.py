@@ -1,11 +1,19 @@
 
-# ## This notebook is for practicing creating ADSL from SDTMs using Python.
+# ---------------------------------------------------
+# This notebook is for practicing creating ADSL from SDTMs using Python.
+# ---------------------------------------------------
 
-# ### Functions to merge Main domain and SUPP 
+# ---------------------------------------------------
+# 1. Functions to merge Main domain and SUPP 
+# ---------------------------------------------------
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+
+script_dir = os.path.dirname(__file__)
+data_dir = os.path.join(script_dir, "../data")  
 
 # Read XPT file
 def read_xpt(filename):
@@ -60,12 +68,12 @@ def read_and_merge(domains):
     supp_domains = {}
 
     for domain in domains:
-        main_df = decode_byte_columns(read_xpt(f"{domain}.xpt"))
+        main_df = decode_byte_columns(read_xpt(os.path.join(data_dir, f"{domain}.xpt")))
         dataframes[domain] = main_df
 
         supp_file = f"SUPP{domain}.xpt"
         try:
-            supp_df = decode_byte_columns(read_xpt(supp_file))
+            supp_df = decode_byte_columns(read_xpt(os.path.join(data_dir, supp_file)))
             supp_domains[domain] = supp_df
         except FileNotFoundError:
             supp_domains[domain] = None
@@ -79,10 +87,9 @@ def read_and_merge(domains):
 
 
 
-# ### Creating ADSL vars
-
-# In[9]:
-
+# ---------------------------------------------------
+# 2. Data Handling - ADSL vars -
+# ---------------------------------------------------
 
 # Read data
 domains = ["DM", "EX", "DS"]
@@ -127,7 +134,10 @@ ADSL = adsl_temp[adsl_vars].copy()
 #Duplicate check
 assert ADSL['USUBJID'].is_unique, "There are duplicate USUBJID in ADSL!"
 
-#
+
+# ---------------------------------------------------
+# 3. Data checks
+# ---------------------------------------------------
 
 # ### Data checks
 #Data checks
@@ -138,7 +148,7 @@ assert ADSL['USUBJID'].is_unique, "There are duplicate USUBJID in ADSL!"
 
 
 # Data types
-#print(adsl.dtypes)
+print(ADSL.dtypes)
 
 # Check missing values
 #print(adsl.isnull().sum())
