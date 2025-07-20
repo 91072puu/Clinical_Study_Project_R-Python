@@ -19,6 +19,9 @@ __pycache__/
 data/
 *.xpt
 
+scripts/
+*.xpt
+
 #ignore ds_store
 **/..DS_Store/
 
