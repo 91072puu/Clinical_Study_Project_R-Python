@@ -22,6 +22,7 @@ data/
 data/
 *.csv
 
+#ignore all xpt
 *.xpt
 
 #ignore ds_store
