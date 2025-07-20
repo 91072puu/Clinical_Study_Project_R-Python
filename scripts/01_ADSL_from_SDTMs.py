@@ -24,6 +24,9 @@ dm = merged_data["DM"]
 ex = merged_data["EX"]
 ds = merged_data["DS"]
 
+# ----------------------------
+# 2.1 SDTM.EX data handling
+# ----------------------------
 
 # TRTSDT / TRTEDT
 ex['exstdtc_dt'] = pd.to_datetime(ex['EXSTDTC'], errors='coerce')
@@ -37,16 +40,37 @@ trt_dates = ex.groupby('USUBJID').agg(
 # Merge to DM
 adsl_full = pd.merge(dm, trt_dates, on="USUBJID", how="left")
 
+
+# ----------------------------
+# 2.2 SDTM.DS data handling
+# ----------------------------
+
+# Coming soon!
+
+
+# ----------------------------
+# 2.3 SDTM.DS data handling
+# ----------------------------
+
 # TRT01P and TRT01A Rename ARM/ACTARM
 adsl_full = adsl_full.rename(columns={'ARM': 'TRT01P', 'ACTARM': 'TRT01A'})
+
+#TRT01AN/TRT01PN
+mapping = {
+    'Xanomeline High Dose': 1,
+    'Xanomeline Low Dose': 2,
+    'Placebo': 3
+}
+
+adsl_full['TRT01AN'] = adsl_full['TRT01A'].map(mapping)
+adsl_full['TRT01PN'] = adsl_full['TRT01P'].map(mapping)
+
 
 # AGEGRP1
 adsl_full['AGEGRP1'] = pd.cut(adsl_full['AGE'],
                               bins=[0, 65, 75, np.inf],
                               labels = ['<65', '65-74', '75+'], 
                               include_lowest=True) #if there is 0 years old (not for this data...)
-
-print(adsl_full['AGEGRP1'].cat.categories.tolist())
 
 # FASFL - as no randomization date 
 adsl_full['FASFL'] = np.where(adsl_full['TRTSDT'].notna(), 'Y', 'N')
@@ -57,11 +81,19 @@ adsl_full['SAFFL'] = adsl_full['SAFFL'].fillna('N') #assign N to missing
 adsl_full['ITTFL'] = adsl_full['ITTFL'].fillna('N') #assign N to missing
 
 
-# Final ADSL
+
+# ---------------------------------------------------
+# 3. Output ADSL
+# ---------------------------------------------------
+
+# Define variable names
 adsl_vars = [
     'STUDYID', 'USUBJID', 'SUBJID', 'AGE', 'AGEU', 'AGEGRP1', 
-    'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01A', 'FASFL', 'SAFFL', 'ITTFL'
+    'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01PN', 'TRT01A', 'TRT01AN', 
+    'FASFL', 'SAFFL', 'ITTFL'
 ]
+
+# Create ADSL
 ADSL = adsl_full[adsl_vars].copy()
 
 #Duplicate check
@@ -69,7 +101,7 @@ assert ADSL['USUBJID'].is_unique, "There are duplicate USUBJID in ADSL!"
 
 
 # ---------------------------------------------------
-# 3. Data checks
+# 4. Random notes for Data checks
 # ---------------------------------------------------
 
 # ### Data checks
@@ -77,7 +109,6 @@ assert ADSL['USUBJID'].is_unique, "There are duplicate USUBJID in ADSL!"
 #print(ADSL.head())
 print(ADSL.columns)
 #list(dm.columns)
-
 
 
 # Data types
@@ -108,7 +139,7 @@ print(ADSL.columns)
 #plt.show()
 
 # ---------------------------------------------------
-# 4. Save as CSV 
+# 5. Save as CSV 
 # ---------------------------------------------------
 script_dir = os.path.dirname(__file__)
 ADSL.to_csv(os.path.join(script_dir, "adsl.csv"), index=False)
