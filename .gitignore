@@ -19,6 +19,9 @@ __pycache__/
 data/
 *.xpt
 
+data/
+*.csv
+
 scripts/
 *.xpt
 
