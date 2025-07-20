@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from helpers import read_and_merge
+from helpers.read_and_merge import read_and_merge
 
 
 # ---------------------------------------------------
@@ -18,12 +18,12 @@ from helpers import read_and_merge
 # ---------------------------------------------------
 
 # Read data
-domains = ["DM", "EX", "DS"]
+domains = ["dm", "ex", "ds"]
 merged_data = read_and_merge(domains)
 
-dm = merged_data["DM"]
-ex = merged_data["EX"]
-ds = merged_data["DS"]
+dm = merged_data["dm"]
+ex = merged_data["ex"]
+ds = merged_data["ds"]
 
 
 # TRTSDT / TRTEDT
