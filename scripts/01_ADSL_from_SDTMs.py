@@ -48,6 +48,7 @@ adsl_full = pd.merge(dm, trt_dates, on="USUBJID", how="left")
 # Coming soon!
 
 
+
 # ----------------------------
 # 2.3 SDTM.DS data handling
 # ----------------------------
@@ -59,7 +60,8 @@ adsl_full = adsl_full.rename(columns={'ARM': 'TRT01P', 'ACTARM': 'TRT01A'})
 mapping = {
     'Xanomeline High Dose': 1,
     'Xanomeline Low Dose': 2,
-    'Placebo': 3
+    'Placebo': 3,
+    'Screen Failure': 99
 }
 
 adsl_full['TRT01AN'] = adsl_full['TRT01A'].map(mapping)
@@ -76,10 +78,10 @@ adsl_full['AGEGRP1'] = pd.cut(adsl_full['AGE'],
 adsl_full['FASFL'] = np.where(adsl_full['TRTSDT'].notna(), 'Y', 'N')
 
 # Flags set to SUPPDM values
-adsl_full = adsl_full.rename(columns={'SAFETY': 'SAFFL', 'ITT': 'ITTFL'})
+adsl_full = adsl_full.rename(columns={'SAFETY': 'SAFFL', 'ITT': 'ITTFL', 'EFFICACY':'EFFFL'})
 adsl_full['SAFFL'] = adsl_full['SAFFL'].fillna('N') #assign N to missing
 adsl_full['ITTFL'] = adsl_full['ITTFL'].fillna('N') #assign N to missing
-
+adsl_full['EFFFL'] = adsl_full['EFFFL'].fillna('N') #assign N to missing
 
 
 # ---------------------------------------------------
@@ -90,7 +92,7 @@ adsl_full['ITTFL'] = adsl_full['ITTFL'].fillna('N') #assign N to missing
 adsl_vars = [
     'STUDYID', 'USUBJID', 'SUBJID', 'AGE', 'AGEU', 'AGEGRP1', 
     'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01PN', 'TRT01A', 'TRT01AN', 
-    'FASFL', 'SAFFL', 'ITTFL'
+    'FASFL', 'SAFFL', 'ITTFL', 'EFFFL'
 ]
 
 # Create ADSL
@@ -100,14 +102,26 @@ ADSL = adsl_full[adsl_vars].copy()
 assert ADSL['USUBJID'].is_unique, "There are duplicate USUBJID in ADSL!"
 
 
+
 # ---------------------------------------------------
-# 4. Random notes for Data checks
+# 4. Save as CSV 
+# ---------------------------------------------------
+script_dir = os.path.dirname(__file__)
+ADSL.to_csv(os.path.join(script_dir, "adsl.csv"), index=False)
+ds.to_csv(os.path.join(script_dir, "ds.csv"), index=False)
+dm.to_csv(os.path.join(script_dir, "dm.csv"), index=False)
+
+
+
+
+# ---------------------------------------------------
+# 5. Random notes for Data checks
 # ---------------------------------------------------
 
 # ### Data checks
 #Data checks
 #print(ADSL.head())
-print(ADSL.columns)
+#print(ADSL.columns)
 #list(dm.columns)
 
 
@@ -138,10 +152,6 @@ print(ADSL.columns)
 #plt.title('Age Distribution')
 #plt.show()
 
-# ---------------------------------------------------
-# 5. Save as CSV 
-# ---------------------------------------------------
-script_dir = os.path.dirname(__file__)
-ADSL.to_csv(os.path.join(script_dir, "adsl.csv"), index=False)
+
 
 
