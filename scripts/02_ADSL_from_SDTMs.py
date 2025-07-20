@@ -127,7 +127,7 @@ ADSL = adsl_temp[adsl_vars].copy()
 #Duplicate check
 assert ADSL['USUBJID'].is_unique, "There are duplicate USUBJID in ADSL!"
 
-
+#
 
 # ### Data checks
 #Data checks
