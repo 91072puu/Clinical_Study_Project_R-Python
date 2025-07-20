@@ -1,16 +1,37 @@
-# Read XPT file
+
+# Import libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+
+#Set up directories
+script_dir = os.path.dirname(__file__)  # Get the directory path where this script is located
+data_dir = os.path.join(script_dir, "../data")  # Set path to 'data' folder located one level above the script directory
+
+# ---------------------------------------------------
+# 1. Read xpt File
+# ---------------------------------------------------
+
 def read_xpt(filename):
     return pd.read_sas(filename, format="xport", encoding="utf-8")
 
-# Decode byte columns to string
+# ---------------------------------------------------
+# 2.Decode byte columns to string
+# ---------------------------------------------------
+
 def decode_byte_columns(df):
     for col in df.columns:
         if df[col].dtype == "object":
             df[col] = df[col].apply(lambda x: x.decode("utf-8") if isinstance(x, bytes) else x)
     return df
 
-# Merge main domain and its corresponding SUPP-- dataset
+# ---------------------------------------------------
+# 3. Merge main domain and its corresponding SUPP-- dataset
+# ---------------------------------------------------
+
 def merge_supp(main_df, supp_df, domain_name):
+    #return main domain if SUPP-- dataset does not exist
     if supp_df is None or supp_df.empty:
         return main_df
 
@@ -45,18 +66,20 @@ def merge_supp(main_df, supp_df, domain_name):
 
     return merged
 
-# Main function to read and merge SDTMs and SUPP--
+# ---------------------------------------------------
+# 4. Using read_sas, decode_byte_column,merge_supp, get SDTM datasets with SUPP--
+# ---------------------------------------------------
 def read_and_merge(domains):
     dataframes = {}
     supp_domains = {}
 
     for domain in domains:
-        main_df = decode_byte_columns(read_xpt(f"{domain}.xpt"))
+        main_df = decode_byte_columns(read_xpt(os.path.join(data_dir, f"{domain}.xpt")))
         dataframes[domain] = main_df
 
         supp_file = f"SUPP{domain}.xpt"
         try:
-            supp_df = decode_byte_columns(read_xpt(supp_file))
+            supp_df = decode_byte_columns(read_xpt(os.path.join(data_dir, supp_file)))
             supp_domains[domain] = supp_df
         except FileNotFoundError:
             supp_domains[domain] = None
@@ -67,5 +90,3 @@ def read_and_merge(domains):
             dataframes[domain] = merge_supp(dataframes[domain], supp_df, domain_name=domain)
 
     return dataframes
-
-
