@@ -1,6 +1,6 @@
 
 # ---------------------------------------------------
-# This notebook is for practicing creating ADSL from SDTMs using Python.
+# This script is for practicing creating ADSL from SDTMs using Python.
 # ---------------------------------------------------
 
 # ---------------------------------------------------
