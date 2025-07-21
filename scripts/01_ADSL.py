@@ -11,7 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from helpers.read_and_merge import read_and_merge
-from helpers.rename_sdtm_var import rename_sdtm_var
+from helpers.ADAM_useful_functions import rename_sdtm_var
+
 
 
 # ---------------------------------------------------
@@ -24,6 +25,8 @@ merged_data = read_and_merge(["DM", "EX", "DS"])
 dm = merged_data["DM"]
 ex = merged_data["EX"]
 ds = merged_data["DS"]
+
+
 
 # ----------------------------
 # 2.1 SDTM.EX data handling
@@ -42,16 +45,38 @@ trt_dates = ex.groupby('USUBJID').agg(
 adsl_full = pd.merge(dm, trt_dates, on="USUBJID", how="left")
 
 
+
 # ----------------------------
 # 2.2 SDTM.DS data handling
 # ----------------------------
+# Derive EOSSTT
+ds_disp = ds[ds['DSCAT'] == 'DISPOSITION EVENT'].copy()
+eos_map = {
+    'COMPLETED': 'COMPLETED',
+    'ADVERSE EVENT': 'DISCONTINUED',
+    'WITHDRAWAL BY SUBJECT': 'DISCONTINUED',
+    'LOST TO FOLLOW-UP': 'DISCONTINUED',
+    'DEATH': 'COMPLETED'
+}
+ds_disp['EOSSTT'] = ds_disp['DSDECOD'].map(eos_map)
 
-# Coming soon!
+print(ds_disp['DSDECOD'].unique())
+
+# Drop duplicates
+ds_eos = ds_disp[['USUBJID', 'EOSSTT']].drop_duplicates(subset='USUBJID')
+
+# Merge DS vars to adsl_full
+adsl_full = pd.merge(adsl_full, ds_eos, on="USUBJID", how="left")
+
+# Duplicate checks
+#before = ds_disp['USUBJID'].nunique()  
+#after = ds_eos['USUBJID'].nunique()
+#print(f"Before drop_duplicates: {before}, After: {after}")
 
 
 
 # ----------------------------
-# 2.3 SDTM.DS data handling
+# 2.3 SDTM.DM data handling
 # ----------------------------
 
 # TRT01P and TRT01A Rename ARM/ACTARM
@@ -79,8 +104,6 @@ adsl_full['AGEGRP1'] = pd.cut(adsl_full['AGE'],
 adsl_full['FASFL'] = np.where(adsl_full['TRTSDT'].notna(), 'Y', 'N')
 
 # Flags set to SUPPDM values - looks like we can use rename for this study
-
-
 rename_map = {'SAFETY': 'SAFFL', 'ITT': 'ITTFL', 'EFFICACY': 'EFFFL', 
             'COMPLT8':'COMPFL8','COMPLT16':'COMPFL16','COMPLT24':'COMPFL24'}
 
@@ -95,7 +118,8 @@ adsl_full = rename_sdtm_var(adsl_full, rename_map,fill_value='N')
 adsl_vars = [
     'STUDYID', 'USUBJID', 'SUBJID', 'AGE', 'AGEU', 'AGEGRP1', 
     'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01PN', 'TRT01A', 'TRT01AN', 
-    'FASFL', 'SAFFL', 'ITTFL', 'EFFFL', 'COMPFL8', 'COMPFL16','COMPFL24'
+    'FASFL', 'SAFFL', 'ITTFL', 'EFFFL', 'COMPFL8', 'COMPFL16','COMPFL24',
+    'EOSSTT'
 ]
 
 # Create ADSL
