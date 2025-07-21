@@ -1,6 +1,6 @@
 
 """
-Module: read_and_merge
+Module: ADAM_useful_functions
 
 Functions:
 1. rename_sdtm_var
