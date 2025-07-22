@@ -37,8 +37,8 @@ ex['exstdtc_dt'] = pd.to_datetime(ex['EXSTDTC'], errors='coerce')
 ex['exendtc_dt'] = pd.to_datetime(ex['EXENDTC'], errors='coerce')
 
 trt_dates = ex.groupby('USUBJID').agg(
-    TRTSDT=('exstdtc_dt','min'),
-    TRTEDT=('exendtc_dt','max')
+    TRTSDT=('exstdtc_dt','min'), #first EX date;
+    TRTEDT=('exendtc_dt','max')  #last EX date;
 ).reset_index()
 
 # Merge to DM
@@ -49,34 +49,43 @@ adsl_full = pd.merge(dm, trt_dates, on="USUBJID", how="left")
 # ----------------------------
 # 2.2 SDTM.DS data handling
 # ----------------------------
-# Derive EOSSTT
+# Derive the end of Study Status
+# EOSDT
+ds['EOSDT'] = pd.to_datetime(ds['DSSTDTC'], errors='coerce')
+
+# Filter only DISPOSITION EVENT
 ds_disp = ds[ds['DSCAT'] == 'DISPOSITION EVENT'].copy()
+
+# Mapping of EOSSTT
 eos_map = {
     'COMPLETED': 'COMPLETED',
+    'DEATH': 'DISCONTINUED',
     'ADVERSE EVENT': 'DISCONTINUED',
+    'STUDY TERMINATED BY SPONSOR': 'DISCONTINUED',
+    'SCREEN FAILURE': 'NOT STARTED',
     'WITHDRAWAL BY SUBJECT': 'DISCONTINUED',
+    'PHYSICIAN DECISION': 'DISCONTINUED',
+    'PROTOCOL VIOLATION': 'DISCONTINUED',
     'LOST TO FOLLOW-UP': 'DISCONTINUED',
-    'DEATH': 'COMPLETED'
+    'LACK OF EFFICACY': 'DISCONTINUED'
 }
 ds_disp['EOSSTT'] = ds_disp['DSDECOD'].map(eos_map)
 
-print(ds_disp['DSDECOD'].unique())
+# DSCREAS
+ds_disp['DCSREAS'] = ''
+ds_disp.loc[ds_disp['EOSSTT'] == 'DISCONTINUED', 'DCSREAS'] = ds_disp['DSDECOD'] #loc - df.loc[row, column]
 
-# Drop duplicates
-ds_eos = ds_disp[['USUBJID', 'EOSSTT']].drop_duplicates(subset='USUBJID')
+# Keep only one record per USUBJID (last DISP event)
+ds_disp = ds_disp.sort_values(by='EOSDT', ascending=False)
+ds_eos = ds_disp[['USUBJID', 'EOSDT', 'EOSSTT', 'DCSREAS']].drop_duplicates(subset='USUBJID')
 
-# Merge DS vars to adsl_full
-adsl_full = pd.merge(adsl_full, ds_eos, on="USUBJID", how="left")
-
-# Duplicate checks
-#before = ds_disp['USUBJID'].nunique()  
-#after = ds_eos['USUBJID'].nunique()
-#print(f"Before drop_duplicates: {before}, After: {after}")
+# Merge
+adsl_full = pd.merge(adsl_full, ds_eos, on='USUBJID', how='left')
 
 
 
 # ----------------------------
-# 2.3 SDTM.DM data handling
+# 2.3 SDTM.DM data handling
 # ----------------------------
 
 # TRT01P and TRT01A Rename ARM/ACTARM
@@ -101,13 +110,16 @@ adsl_full['AGEGRP1'] = pd.cut(adsl_full['AGE'],
                               include_lowest=True) #if there is 0 years old (not for this data...)
 
 # FASFL - as no randomization date 
-adsl_full['FASFL'] = np.where(adsl_full['TRTSDT'].notna(), 'Y', 'N')
+adsl_full['FASFL'] = np.where(adsl_full['TRTSDT'].notna(), 'Y', 'N') #SAS: ifc
 
 # Flags set to SUPPDM values - looks like we can use rename for this study
 rename_map = {'SAFETY': 'SAFFL', 'ITT': 'ITTFL', 'EFFICACY': 'EFFFL', 
             'COMPLT8':'COMPFL8','COMPLT16':'COMPFL16','COMPLT24':'COMPFL24'}
 
 adsl_full = rename_sdtm_var(adsl_full, rename_map,fill_value='N')
+
+#To fill ONGOING (although looks like no ONGOING subject for this study??)
+adsl_full['EOSSTT'] = adsl_full['EOSSTT'].fillna('ONGOING')
 
 
 # ---------------------------------------------------
@@ -119,7 +131,7 @@ adsl_vars = [
     'STUDYID', 'USUBJID', 'SUBJID', 'AGE', 'AGEU', 'AGEGRP1', 
     'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01PN', 'TRT01A', 'TRT01AN', 
     'FASFL', 'SAFFL', 'ITTFL', 'EFFFL', 'COMPFL8', 'COMPFL16','COMPFL24',
-    'EOSSTT'
+    'EOSSTT', 'EOSDT', 'DCSREAS'
 ]
 
 # Create ADSL
@@ -159,7 +171,7 @@ dm.to_csv(os.path.join(script_dir, "dm.csv"), index=False)
 #print(adsl.isnull().sum())
 
 # Check unique values
-#print(suppdm['QNAM'].unique())
+#print(ds_disp['DSDECOD'].unique())
 #print(adsl['RACE'].unique())
 
 # Check summary stats
