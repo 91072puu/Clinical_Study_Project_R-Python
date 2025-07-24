@@ -72,9 +72,23 @@ ds_disp.loc[ds_disp['EOSSTT'] == 'DISCONTINUED', 'DCSREAS'] = ds_disp['DSDECOD']
 ds_disp = ds_disp.sort_values(by='EOSDT', ascending=False)
 ds_eos = ds_disp[['USUBJID', 'EOSDT', 'EOSSTT', 'DCSREAS']].drop_duplicates(subset='USUBJID')
 
-# Merge
+# Merge to DM
 adsl_full = pd.merge(adsl_full, ds_eos, on='USUBJID', how='left')
 
+# To fill ONGOING for EOSSTT (although looks like no ONGOING subject for this study)
+adsl_full['EOSSTT'] = adsl_full['EOSSTT'].fillna('ONGOING')
+
+# EOTSTT derivation
+conditions = [
+    adsl_full['COMPLT24'] == 'Y',
+    adsl_full['DCSREAS'].notna()
+]
+status = ['COMPLETED', 'DISCONTINUED']
+adsl_full['EOTSTT'] = np.select(conditions, status, default='ONGOING')
+
+# DCTREAS derivation
+adsl_full['DCTREAS'] = ''
+adsl_full.loc[adsl_full['EOTSTT'] == 'DISCONTINUED', 'DCTREAS'] = adsl_full['DCSREAS']
 
 
 # ----------------------------
@@ -111,8 +125,6 @@ rename_map = {'SAFETY': 'SAFFL', 'ITT': 'ITTFL', 'EFFICACY': 'EFFFL',
 
 adsl_full = rename_sdtm_var(adsl_full, rename_map,fill_value='N')
 
-#To fill ONGOING (although looks like no ONGOING subject for this study??)
-adsl_full['EOSSTT'] = adsl_full['EOSSTT'].fillna('ONGOING')
 
 
 # ---------------------------------------------------
@@ -124,7 +136,7 @@ adsl_vars = [
     'STUDYID', 'USUBJID', 'SUBJID', 'AGE', 'AGEU', 'AGEGRP1', 
     'SEX', 'RACE', 'TRTSDT', 'TRTEDT', 'TRT01P', 'TRT01PN', 'TRT01A', 'TRT01AN', 
     'FASFL', 'SAFFL', 'ITTFL', 'EFFFL', 'COMPFL8', 'COMPFL16','COMPFL24',
-    'EOSSTT', 'EOSDT', 'DCSREAS'
+    'EOSSTT', 'EOSDT', 'DCSREAS','EOTSTT','DCTREAS'
 ]
 
 # Create ADSL
